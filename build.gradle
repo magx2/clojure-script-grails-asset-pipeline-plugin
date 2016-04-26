@@ -49,6 +49,7 @@ dependencyManagement {
 
 dependencies {
     compile 'com.bertramlabs.plugins:asset-pipeline-core:2.8.1'
+	compile 'org.clojure:clojurescript:1.8.51'
 	provided "org.grails:grails-core"
     testCompile "org.grails:grails-plugin-testing"
     console "org.grails:grails-console"
