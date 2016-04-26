@@ -49,7 +49,8 @@ dependencyManagement {
 }
 
 dependencies {
-    provided "org.grails:grails-core"
+    compile 'com.bertramlabs.plugins:asset-pipeline-core:2.8.1'
+	provided "org.grails:grails-core"
     testCompile "org.grails:grails-plugin-testing"
     console "org.grails:grails-console"
 }
