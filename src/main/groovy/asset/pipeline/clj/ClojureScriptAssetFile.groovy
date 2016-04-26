@@ -9,6 +9,6 @@ class ClojureScriptAssetFile extends AbstractAssetFile {
 	static final contentType = ['application/javascript','application/x-javascript','text/javascript']
 	static extensions = ['clj']
 	static final String compiledExtension = 'js'
-	static processors = [CoffeeScriptProcessor]
+	static processors = [ClojureScriptProcessor]
 	Pattern directivePattern = ~/(?m)#=(.*)/
 }

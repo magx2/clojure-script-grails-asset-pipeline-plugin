@@ -7,7 +7,7 @@ import org.mozilla.javascript.Scriptable
 import asset.pipeline.AbstractProcessor
 import asset.pipeline.AssetCompiler
 
-class ClojureScriptProcessor  extends AbstractProcessor {
+class ClojureScriptProcessor extends AbstractProcessor {
 	/**
 	 * Constructor for building a Processor
 	 *
