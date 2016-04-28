@@ -2,10 +2,12 @@ package asset.pipeline.clj
 
 
 import asset.pipeline.AssetFile
-import clojure.java.api.Clojure
 import clojure.lang.IFn
 import asset.pipeline.AbstractProcessor
 import asset.pipeline.AssetCompiler
+
+import static clojure.java.api.Clojure.read
+import static clojure.java.api.Clojure.var
 
 class ClojureScriptProcessor extends AbstractProcessor {
 	private final IFn emptyEnv
@@ -20,13 +22,13 @@ class ClojureScriptProcessor extends AbstractProcessor {
 	ClojureScriptProcessor(AssetCompiler precompiler) {
 		super(precompiler)
 
-		IFn require = Clojure.var("clojure.core", "require");
-		require.invoke(Clojure.read("cljs.analyzer.api"))
-		require.invoke(Clojure.read("cljs.compiler.api"))
+		IFn require = var("clojure.core", "require");
+		require.invoke(read("cljs.analyzer.api"))
+		require.invoke(read("cljs.compiler.api"))
 
-		emptyEnv = Clojure.var("cljs.analyzer.api", "empty-env")
-		analyze = Clojure.var("cljs.analyzer.api", "analyze")
-		emit = Clojure.var("cljs.compiler.api", "emit")
+		emptyEnv = var("cljs.analyzer.api", "empty-env")
+		analyze = var("cljs.analyzer.api", "analyze")
+		emit = var("cljs.compiler.api", "emit")
 	}
 
 	@Override
