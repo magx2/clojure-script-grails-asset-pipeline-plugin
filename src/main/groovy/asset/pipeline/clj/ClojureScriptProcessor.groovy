@@ -25,7 +25,7 @@ class ClojureScriptProcessor extends AbstractProcessor {
 
 		IFn emptyEnv = Clojure.var("cljs.analyzer.api", "empty-env")
 		IFn analyze = Clojure.var("cljs.analyzer.api", "analyze")
-		IFn emit = Clojure.var("cljs.compiler", "emit")
+		IFn emit = Clojure.var("cljs.compiler.api", "emit")
 
 		emit.invoke(
 				analyze.invoke(
