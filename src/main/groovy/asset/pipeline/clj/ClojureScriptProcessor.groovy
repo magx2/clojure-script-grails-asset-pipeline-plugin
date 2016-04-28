@@ -2,8 +2,8 @@ package asset.pipeline.clj
 
 
 import asset.pipeline.AssetFile
-import org.mozilla.javascript.Context
-import org.mozilla.javascript.Scriptable
+import clojure.java.api.Clojure
+import clojure.lang.IFn
 import asset.pipeline.AbstractProcessor
 import asset.pipeline.AssetCompiler
 
@@ -19,6 +19,18 @@ class ClojureScriptProcessor extends AbstractProcessor {
 
 	@Override
 	String process(String inputText, AssetFile assetFile) {
-		return null
+		IFn require = Clojure.var("clojure.core", "require");
+		require.invoke(Clojure.read("cljs.analyzer.api"))
+		require.invoke(Clojure.read("cljs.compiler.api"))
+
+		IFn emptyEnv = Clojure.var("cljs.analyzer.api", "empty-env")
+		IFn analyze = Clojure.var("cljs.analyzer.api", "analyze")
+		IFn emit = Clojure.var("cljs.compiler", "emit-str")
+
+		emit.invoke(
+				analyze.invoke(
+						emptyEnv.invoke(), "'$inputText".toString()
+				)
+		)
 	}
 }
