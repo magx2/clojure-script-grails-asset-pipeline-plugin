@@ -22,7 +22,7 @@ class ClojureScriptProcessor extends AbstractProcessor {
 	ClojureScriptProcessor(AssetCompiler precompiler) {
 		super(precompiler)
 
-		IFn require = var("clojure.core", "require");
+		IFn require = var("clojure.core", "require")
 		require.invoke(read("cljs.analyzer.api"))
 		require.invoke(read("cljs.compiler.api"))
 
