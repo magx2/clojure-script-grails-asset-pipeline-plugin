@@ -8,6 +8,10 @@ import asset.pipeline.AbstractProcessor
 import asset.pipeline.AssetCompiler
 
 class ClojureScriptProcessor extends AbstractProcessor {
+	private final IFn emptyEnv
+	private final IFn analyze
+	private final IFn emit
+
 	/**
 	 * Constructor for building a Processor
 	 *
@@ -15,18 +19,18 @@ class ClojureScriptProcessor extends AbstractProcessor {
 	 */
 	ClojureScriptProcessor(AssetCompiler precompiler) {
 		super(precompiler)
-	}
 
-	@Override
-	String process(String inputText, AssetFile assetFile) {
 		IFn require = Clojure.var("clojure.core", "require");
 		require.invoke(Clojure.read("cljs.analyzer.api"))
 		require.invoke(Clojure.read("cljs.compiler.api"))
 
-		IFn emptyEnv = Clojure.var("cljs.analyzer.api", "empty-env")
-		IFn analyze = Clojure.var("cljs.analyzer.api", "analyze")
-		IFn emit = Clojure.var("cljs.compiler.api", "emit")
+		emptyEnv = Clojure.var("cljs.analyzer.api", "empty-env")
+		analyze = Clojure.var("cljs.analyzer.api", "analyze")
+		emit = Clojure.var("cljs.compiler.api", "emit")
+	}
 
+	@Override
+	String process(String inputText, AssetFile assetFile) {
 		emit.invoke(
 				analyze.invoke(
 						emptyEnv.invoke(), "'$inputText".toString()
