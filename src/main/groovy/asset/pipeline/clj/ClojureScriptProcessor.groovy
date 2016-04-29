@@ -36,7 +36,7 @@ class ClojureScriptProcessor extends AbstractProcessor {
 	String process(String inputText, AssetFile assetFile) {
 		emit.invoke(
 				analyze.invoke(
-						emptyEnv.invoke(), read("$inputText".toString())
+						emptyEnv.invoke(), read(inputText)
 				)
 		)
 	}
