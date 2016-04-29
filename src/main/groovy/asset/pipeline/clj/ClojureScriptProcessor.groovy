@@ -8,6 +8,7 @@ import asset.pipeline.AssetCompiler
 
 import static clojure.java.api.Clojure.read
 import static clojure.java.api.Clojure.var
+import static java.lang.Thread.currentThread
 
 class ClojureScriptProcessor extends AbstractProcessor {
 	private final IFn emptyEnv
@@ -21,6 +22,9 @@ class ClojureScriptProcessor extends AbstractProcessor {
 	 */
 	ClojureScriptProcessor(AssetCompiler precompiler) {
 		super(precompiler)
+
+		// FIX with class loader: http://dev.clojure.org/jira/browse/CLJ-260?focusedCommentId=23453&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-23453
+		currentThread().setContextClassLoader(this.class.classLoader)
 
 		var("clojure.core", "require").with {
 			invoke(read("cljs.analyzer.api"))
