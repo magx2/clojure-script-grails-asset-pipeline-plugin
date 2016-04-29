@@ -38,10 +38,32 @@ class ClojureScriptProcessor extends AbstractProcessor {
 
 	@Override
 	String process(String inputText, AssetFile assetFile) {
-		emit.invoke(
-				analyze.invoke(
-						emptyEnv.invoke(), read(inputText)
-				)
-		)
+		parseStatement(inputText).collect { statement -> emit(statement) }.join("")
+	}
+
+	private Object emit(String statement) {
+		try {
+			emit.invoke(
+					analyze.invoke(
+							emptyEnv.invoke(), read(statement)
+					)
+			)
+		} catch (Exception e) {
+			throw new IllegalArgumentException("Statement \"$statement\" is broken!")
+		}
+	}
+
+	private static List<String> parseStatement(String inputText) {
+		def open = 0
+		inputText.inject([]) { List<String> statements, letter ->
+			if (letter == "(") {
+				if (open == 0) statements.add("")
+				open++
+			} else if (letter == ")") {
+				open--
+			}
+			statements[statements.size() - 1] = statements.last() + letter
+			statements
+		} as List<String>
 	}
 }
