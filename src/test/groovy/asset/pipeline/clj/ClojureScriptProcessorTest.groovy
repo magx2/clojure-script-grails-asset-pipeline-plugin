@@ -18,8 +18,6 @@ class ClojureScriptProcessorTest extends Specification {
 		where:
 		clojureScript << [
 		        "(defn plus [a b] (+ a b))",
-		        "(ns hello-world.core) (enable-console-print!) (defn plus [a b] (+ a b)) (println (plus 1 2))",
-				"(ns hello-world.core) (enable-console-print!) (println (+ 1 2))",
 				"(+ 1 2)"
 		]
 	}
