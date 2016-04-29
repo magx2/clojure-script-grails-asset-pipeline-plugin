@@ -12,13 +12,18 @@ class ClojureScriptProcessorTest extends Specification {
 		final javaScript = processor.process(clojureScript, null)
 
 		then:
-		println "out> [$javaScript]"
-		true
+		javaScript == parsedClojureScript
 
 		where:
 		clojureScript << [
 		        "(defn plus [a b] (+ a b))",
 				"(+ 1 2)"
+		]
+		parsedClojureScript << [
+		        "cljs.user.plus = (function cljs\$user\$plus(a,b){\n" +
+						"return (a + b);\n" +
+						"});\n",
+				"((1) + (2));\n"
 		]
 	}
 }
