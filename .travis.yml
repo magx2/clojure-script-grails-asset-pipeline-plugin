@@ -2,4 +2,4 @@ language: groovy
 sudo: false
 jdk:
   - oraclejdk8
-script: ./gradlew test
+script: ./gradlew check
