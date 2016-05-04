@@ -49,7 +49,7 @@ class ClojureScriptProcessor extends AbstractProcessor {
 					)
 			)
 		} catch (Exception e) {
-			throw new IllegalArgumentException("Statement \"$statement\" is broken!")
+			throw new IllegalArgumentException("Statement \"$statement\" is broken!", e)
 		}
 	}
 
