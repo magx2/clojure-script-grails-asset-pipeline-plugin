@@ -11,9 +11,8 @@ import static clojure.java.api.Clojure.var
 import static java.lang.Thread.currentThread
 
 class ClojureScriptProcessor extends AbstractProcessor {
-	private final IFn emptyEnv
-	private final IFn analyze
-	private final IFn emit
+	private final IFn compile
+	private final IFn inputs
 
 	/**
 	 * Constructor for building a Processor
@@ -26,44 +25,48 @@ class ClojureScriptProcessor extends AbstractProcessor {
 		// FIX with class loader: http://dev.clojure.org/jira/browse/CLJ-260?focusedCommentId=23453&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-23453
 		currentThread().setContextClassLoader(this.class.classLoader)
 
-		var("clojure.core", "require").with {
-			invoke(read("cljs.analyzer.api"))
-			invoke(read("cljs.compiler.api"))
-		}
+		var("clojure.core", "require")
+				.invoke(read("cljs.build.api"))
 
-		emptyEnv = var("cljs.analyzer.api", "empty-env")
-		analyze = var("cljs.analyzer.api", "analyze")
-		emit = var("cljs.compiler.api", "emit")
+		compile = var("cljs.build.api", "compile")
+		inputs = var("cljs.build.api", "inputs")
 	}
 
 	@Override
 	String process(String inputText, AssetFile assetFile) {
-		parseStatement(inputText).collect { statement -> emit(statement) }.join("")
+		final file = createTmpFile(assetFile, inputText)
+		final compilable = getCompilable(file.absolutePath)
+		final javaScripts = getJavaScripts(compilable)
+
+		if (javaScripts.size() != 1) {
+			throw new IllegalStateException("Compiled list need to have only one element! Was ${javaScripts.size()}.")
+		}
+
+		javaScripts[0]
 	}
 
-	private Object emit(String statement) {
+	private def getJavaScripts(compilable) {
 		try {
-			emit.invoke(
-					analyze.invoke(
-							emptyEnv.invoke(), read(statement)
-					)
+			compile.invoke(
+					read("{}"),
+					compilable
 			)
-		} catch (Exception e) {
-			throw new IllegalArgumentException("Statement \"$statement\" is broken!", e)
+		} catch (Error e) {
+			throw new RuntimeException(e)
 		}
 	}
 
-	private static List<String> parseStatement(String inputText) {
-		def open = 0
-		inputText.inject([]) { List<String> statements, letter ->
-			if (letter == "(") {
-				if (open == 0) statements.add("")
-				open++
-			} else if (letter == ")") {
-				open--
-			}
-			statements[statements.size() - 1] = statements.last() + letter
-			statements
-		} as List<String>
+	private def getCompilable(path) {
+		try {
+			inputs.invoke(read("\"$path\""))
+		} catch (Error e) {
+			throw new RuntimeException(e)
+		}
+	}
+
+	private static File createTmpFile(AssetFile assetFile, String inputText) {
+		final file = File.createTempFile(assetFile?.path ?: 'Tmp', '.cljs')
+		file.withWriter { writer -> writer.write(inputText) }
+		file
 	}
 }

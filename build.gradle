@@ -50,12 +50,14 @@ dependencyManagement {
 }
 
 dependencies {
-    compile 'com.bertramlabs.plugins:asset-pipeline-core:2.8.1'
-	compile 'org.clojure:clojure:1.7.0'
+	provided 'org.clojure:clojure:1.8.0'
 	compile 'org.clojure:clojurescript:1.8.51'
 	provided "org.grails:grails-core"
     testCompile "org.grails:grails-plugin-testing"
     console "org.grails:grails-console"
+	compile('com.bertramlabs.plugins:asset-pipeline-core:2.8.1') {
+		exclude group: 'com.google.javascript', module: 'closure-compiler'
+	}
 }
 
 task wrapper(type: Wrapper) {
